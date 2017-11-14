@@ -3,10 +3,12 @@ package com.example.edison.afinal;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.CountDownTimer;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Fade;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     List<ImageButton> triangles;
     TextView points, Instruction;
-    int p = 0, limit = 100, soundId, subLimit = 95;
+    int p = 0, limit = 100, soundId, subLimit = 10000;
     int sDuration = 10000,sSecond = 1000;
     int time = 10000, seconds = 1000;
     MediaPlayer sound, right, wrong, secondsSound, end;
@@ -35,11 +37,13 @@ public class MainActivity extends AppCompatActivity {
     Fade fade;
     CountDownTimer timer;
     AlphaAnimation test;
+    int[] color, changer;
     int i = 0;
     ImageButton l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, back;
     ImageButton[] r = new ImageButton[12];// l1,l2,l3,l4,l5,l6,l7,l8,l9,l10,l11,l12;
     Slide slide;
     SoundPool sp;
+    Drawable drawable;
     private static int time_out = 100;
 
 /*    public void onClick(View view) {
@@ -65,6 +69,29 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setAllowEnterTransitionOverlap(true);
         slide = new Slide(Gravity.RIGHT);
         getWindow().setReturnTransition(slide);
+
+
+
+
+        color = new int[5];
+        color[0] = Color.parseColor("#E6D925");
+        color[1] = Color.parseColor("#0007D6");
+        color[2] = Color.parseColor("#1F2153");
+        color[3] = Color.parseColor("#1F5339");
+        color[4] = Color.parseColor("#C54515");
+
+
+        changer = new int[9];
+        changer[0] = Color.parseColor("#157FC5");
+        changer[1] = Color.parseColor("#15A1C5");
+        changer[2] = Color.parseColor("#15C5B9");
+        changer[3] = Color.parseColor("#15C5A1");
+        changer[4] = Color.parseColor("#15C573");
+        changer[5] = Color.parseColor("#15C53E");
+        changer[6] = Color.parseColor("#8BC515");
+        changer[7] = Color.parseColor("#AFC515");
+        changer[8] = Color.parseColor("#C5AE15");
+
 
 
         points = (TextView) findViewById(R.id.textView);
@@ -144,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 view.startAnimation(test);
+
                 //sound.start();
 
                 if (l1.getTag().equals(R.drawable.ic_red)) {
@@ -447,8 +475,8 @@ public class MainActivity extends AppCompatActivity {
                 j += 0.030f;
                 //secondsSound.start();
                 calib += 1;
-                sp.play(soundId, 1, 1, 0, calib, j);
-
+                sp.play(soundId, 1, 1, 0, 1, 1); //former j
+                pbar.getProgressDrawable().setColorFilter(changer[random(0,8)], PorterDuff.Mode.SRC_IN);
 
             }
 
@@ -459,10 +487,11 @@ public class MainActivity extends AppCompatActivity {
                 pbar.setProgress(100);
 
                 if(Integer.valueOf(points.getText().toString()) < limit){
-                    Intent i = new Intent(MainActivity.this, Home.class);
+                    Intent i = new Intent(MainActivity.this, Scare.class);
                     startActivity(i);
+                    overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
                     finish();
-                    Toast.makeText(MainActivity.this, "FUCKCK", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "YOU FAILED", Toast.LENGTH_SHORT).show();
                     secondsSound.stop();
                     end.seekTo(7);
                     end.start();
@@ -473,12 +502,15 @@ public class MainActivity extends AppCompatActivity {
 
                     pbar.setProgress(0);
                     limit += 100;
-                    subLimit -= 5;
+                    time = 0;
                     time += subLimit;
-                    Instruction.setText("Reach " + limit + "points");
+                    subLimit -= 1000;
+
+                    Instruction.setText("Points to Reach: " + limit + " points");
                     countDown(time,1000);
-                    Toast.makeText(MainActivity.this, "passed " + limit + " " + time, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, ""+time, Toast.LENGTH_SHORT).show();
                     sp.setLoop(soundId,0);
+                    pbar.getProgressDrawable().setColorFilter(color[random(0,4)], PorterDuff.Mode.SRC_IN);
 
                 }
 

@@ -21,6 +21,7 @@
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".Home"></activity>
         <activity android:name=".Levels"></activity>
+        <activity android:name=".Scare"></activity>
     </application>
 
 </manifest>
